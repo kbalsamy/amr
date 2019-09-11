@@ -18,19 +18,46 @@ class DbOperations():
 
     def create_table(self, table_name):
 
-        self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name}(Consumer UNIQUE, ImportC1 REAL, ImportC2 REAL, ImportC3 REAL, ImportC4 REAL, ImportC5 REAL, ExportC1 REAL, ExportC2 REAL, ExportC3 REAL, ExportC4 REAL, ExportC5 REAL, BankingC1 REAL, BankingC2 REAL, BankingC3 REAL, BankingC4 REAL, BankingC5 REAL, C001 REAL,    C002 REAL, C003 REAL, C004 REAL, C005 REAL, C006 REAL, C007 REAL)")
+        self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name}(Consumer UNIQUE, ImportC1 REAL, ImportC2 REAL, ImportC3 REAL, ImportC4 REAL, ImportC5 REAL, ExportC1 REAL, ExportC2 REAL, ExportC3 REAL, ExportC4 REAL, ExportC5 REAL, NetC1 REAL, NetC2 REAL, NetC3 REAL, NetC4 REAL, NetC5 REAL, BankingC1 REAL, BankingC2 REAL, BankingC3 REAL, BankingC4 REAL, BankingC5 REAL, C002 REAL,C003 REAL, C004 REAL, C005 REAL, C006 REAL, C007 REAL, C001 REAL)")
         self.connection.commit()
 
     def write_table(self, tableName, data):
 
-        inject = ','.join('?', * len(data))
-        insert_cmd = f"INSERT INTO {tableName} VALUES {inject}"
+        inject = ','.join('?' * len(data))
+        insert_cmd = f"INSERT INTO {tableName} VALUES ({inject})"
         self.cursor.execute(insert_cmd, data)
+        self.connection.commit()
 
     def __dropTable(self, tableName):
 
         self.cursor.execute(f'DROP TABLE {tableName}')
         self.connection.commit()
+
+
+# data cleanup helper functions
+
+def cleanup(data):
+
+    slots_read = []
+
+    charges = data['generationStatementCharges']
+    slots = data['generationStatementSlots']
+
+    slots_read.append(data['dispCompanyServiceNumber'])
+
+    read_req = ['impUnits', 'expUnits', 'netUnits', 'bankedBalance']
+
+    for val in read_req:
+
+        for s in slots:
+
+            slots_read.append(s[val])
+
+    for c in charges:
+
+        slots_read.append(c['totalCharges'])
+
+    return slots_read
 
 
 def make_request(method, url, headers, payload=None):
@@ -76,18 +103,20 @@ def build_gen_payload(edc, serviceNumber, month, year):
 
 def main(month, year):
 
+    tableName = month + year
     db = DbOperations(db_connect())
-    db.create_table('y' + year)
+    db.create_table(tableName)
 
-    consumerList = [{'EDC': '472', 'id': ['079204720584', '079204720585']}]
+    consumerList = [{'EDC': '472', 'id': ['079204720584', '079204720585', '079204720586']}]
     for consumer in consumerList:
         edc = consumer['EDC']
         for n in consumer['id']:
             login_data = build_login_payload(n)
-            gen_data = build_gen_payload(edc, n, month, year)
+            gen_data = build_gen_payload(edc, n, month_map.get(month), year)
             results = get_reading(login_data=login_data, gen_data=gen_data)
-            print(results)
-            print('----xxxx------')
+            data = cleanup(results)
+            db.write_table(tableName, data)
 
 
-main('08', '2019')
+if __name__ == '__main__':
+    main('feb', '2019')

@@ -1,5 +1,10 @@
 import os
 
+
+month_map = {'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'may': '05', 'jun': '06', 'jul': '07', 'aug': '08',
+             'sep': '07', 'oct': '10', 'nov': '11', 'dec': '12'}
+
+
 # post method with params as json
 LOGIN_URL = "http://htoa.tnebnet.org/oa-auth-service//tokens/login"
 LOGIN_DATA = {"userName": "079204720584", "password": os.environ.get('password'), "appClientId": "OA"}
