@@ -1,7 +1,8 @@
+import os
 
 # post method with params as json
 LOGIN_URL = "http://htoa.tnebnet.org/oa-auth-service//tokens/login"
-LOGIN_DATA = {"userName": "079204720584", "password": "", "appClientId": "OA"}
+LOGIN_DATA = {"userName": "079204720584", "password": os.environ.get('password'), "appClientId": "OA"}
 
 # get EDC mappings
 EDC_URL = "http://htoa.tnebnet.org/oa-report-service/report/org-summaries?typeCode=EDC&fuelTypeCode=WIND"
