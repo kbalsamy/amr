@@ -106,17 +106,12 @@ def main(month, year):
     tableName = month + year
     db = DbOperations(db_connect())
     db.create_table(tableName)
-
-    consumerList = [{'EDC': '472', 'id': ['079204720584', '079204720585', '079204720586']}]
+    consumerList = [{'EDC': '472', 'id': '079204720586'}, {'EDC': '472', 'id': '079204720640'}]
     for consumer in consumerList:
         edc = consumer['EDC']
-        for n in consumer['id']:
-            login_data = build_login_payload(n)
-            gen_data = build_gen_payload(edc, n, month_map.get(month), year)
-            results = get_reading(login_data=login_data, gen_data=gen_data)
-            data = cleanup(results)
-            db.write_table(tableName, data)
-
-
-if __name__ == '__main__':
-    main('feb', '2019')
+        n = consumer['id']
+        login_data = build_login_payload(n)
+        gen_data = build_gen_payload(edc, n, month_map.get(month), year)
+        results = get_reading(login_data=login_data, gen_data=gen_data)
+        data = cleanup(results)
+        db.write_table(tableName, data)
