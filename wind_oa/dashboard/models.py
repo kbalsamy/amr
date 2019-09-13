@@ -35,7 +35,7 @@ class ServiceGroup(models.Model):
 
 class Readings(models.Model):
 
-    consumerID = models.CharField(max_length=12, unique=True)
+    consumerID = models.CharField(max_length=12)
     statementMonth = models.CharField(max_length=2, blank=True)
     statementYear = models.CharField(max_length=4, blank=True)
     impUnitsC1 = models.DecimalField(max_digits=12, decimal_places=2, blank=True)

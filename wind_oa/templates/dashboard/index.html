@@ -24,9 +24,10 @@
     </nav>
     <!-- main section -->
     <div class="row">
+
         <div class="col s12 m2 l2 " style="padding: 0px">
             <div class="col l12" style="padding-top: 100px;">
-                <a class="waves-effect waves-light  indigo darken-1 btn" style="width:100%">Dashboard</a>
+                <a href="{% url 'dashboard:home' %}" class="waves-effect waves-light  indigo darken-1 btn" style="width:100%">Dashboard</a>
             </div>
             <div class="col l12" style="padding-top: 10px;">
                 <a class="waves-effect waves-light  indigo darken-1 btn" style="width:100%">Allotment</a>
@@ -35,7 +36,11 @@
                 <a class="waves-effect waves-light  indigo darken-1 btn" style="width:100%">Settings</a>
             </div>
         </div>
+
+
+
         <div class="col s12 m10 l10">
+            {% block main %}
             <!-- Teal page content  -->
             <div class="container" style="display: flex; justify-content: flex-end; margin-top: 15px">
                 <a class="waves-effect waves-light btn modal-trigger" href="#modal1">ConnectDB</a>
@@ -91,7 +96,13 @@
             </div>
             <div class="card  indigo lighten-5" style="margin-left: 75px;margin-top: 100px; width: 80%">
                 <div class="row">
-                        <form>
+
+
+
+
+
+                <form method="POST" action="{% url 'dashboard:readings' %}" id ='myform'>
+                    {% csrf_token %}
                         <div class="col s12 m6 l12">
                             <div class="input-field col s12">
                                 <select id='d-customer'>
@@ -101,6 +112,9 @@
                                 </select>
                                 <label>Customer</label>
                             </div>
+
+                            <input type="hidden"  name="customer", value="" id='d-cus'>
+
                         </div>
                         <div class="col s12 m6 l6">
                             <div class="input-field col s12">
@@ -121,7 +135,9 @@
                                 </select>
                                 <label>Month</label>
                             </div>
+                            <input type="hidden" name="month", value="" id='d-mon'>
                         </div>
+
                         <div class="col s12 m6 l6">
                             <div class="input-field col s12">
                                 <select id ='d-year'>
@@ -130,17 +146,24 @@
                                 </select>
                                 <label>year</label>
                             </div>
+                            <input type="hidden" name="year", value="" id='d-yr'>
                         </div>
+
                         <div class="col s12 m6 l12">
                             <div class="input-field col s12" style="display: flex; justify-content: center;">
-                                <button class="btn waves-effect waves-light blue right-align" id="submit">Download<i class="material-icons right">send</i>
-                                </button>
+                                <input type="submit" name="submit" id="sub-btn">
                             </div>
                         </div>
-                    </form>
+
+                </form>
+
                 </div>
+
             </div>
+            {% endblock %}
         </div>
+
+
         <!--JavaScript at end of body for optimized loading-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -176,19 +199,24 @@
 
             });
 
+            $("#sub-btn").click(function(){
 
-            $("#submit").click(function(){
+                    var customer = $('#d-customer').val()
+                    var month = $('#d-month').val()
+                    var year = $("#d-year").val()
 
-                cus = $("#d-customer").val()
-                mon = $("#d-month").val()
-                yr = $("#d-yr").val()
+                    console.log(customer, month, year)
 
-                $(this).attr('href', "{% url 'dashboard:readings' %}")
+                    $('#d-cus').val(customer)
+                    $('#d-mon').val(month)
+                    $("#d-yr").val(year)
 
-
-
+                    $("#myform").submit()
 
             });
+
+
+
 
 
         });
@@ -196,34 +224,7 @@
 </body>
 
 </html>
-<!-- <div class="card  green accent-1 lighten-3" style="margin-top: 30px">
-                <table class="highlight">
-                    <thead>
-                        <tr>
-                            <th>consumer ID</th>
-                            <th>Imp-C1</th>
-                            <th>Imp-C2</th>
-                            <th>Imp-C3</th>
-                            <th>Imp-C4</th>
-                            <th>Imp-C5</th>
-                            <th>Exp-C1</th>
-                            <th>Exp-C2</th>
-                            <th>Exp-C3</th>
-                            <th>Exp-C4</th>
-                            <th>Exp-C5</th>
-                            <th>Net-C1</th>
-                            <th>Net-C2</th>
-                            <th>Net-C3</th>
-                            <th>Net-C4</th>
-                            <th>Net-C5</th>
-                        </tr>
-                    </thead>
-                    <tr>
-                    </tr>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div> -->
+
 <!--
              <div class="fixed-action-btn">
                 <a class="btn-floating btn-large red">

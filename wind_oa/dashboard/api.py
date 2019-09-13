@@ -91,4 +91,5 @@ def main(month, year, consumerList):
         data = cleanup(results)
 
         data_bin.append(data)
+
     return data_bin
