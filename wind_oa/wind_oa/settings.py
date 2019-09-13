@@ -55,7 +55,7 @@ ROOT_URLCONF = 'wind_oa.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,3 +119,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# api keys
+
+API_PASSWORD = os.environ.get('password')
+LOGIN_URL = "http://htoa.tnebnet.org/oa-auth-service//tokens/login"
+GEN_STATEMENT_URL = "http://htoa.tnebnet.org/oa-service//api/gs/generationstatements?"
+READINGS_URL = "http://htoa.tnebnet.org/oa-service//api/gs/generationstatement/{}"
