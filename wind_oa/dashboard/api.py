@@ -12,6 +12,8 @@ def cleanup(data):
     slots = data['generationStatementSlots']
 
     slots_read.append(data['dispCompanyServiceNumber'])
+    slots_read.append(data['statementMonth'])
+    slots_read.append(data['statementYear'])
 
     read_req = ['impUnits', 'expUnits', 'netUnits', 'bankedBalance']
 
@@ -77,9 +79,8 @@ def main(month, year, consumerList):
 
     for consumer in consumerList:
         edc = consumer['EDC']
-        print(edc)
+
         n = consumer['id']
-        print(n)
 
         login_data = build_login_payload(n, settings.API_PASSWORD)
 
